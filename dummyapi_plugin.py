@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 """
 @ABOUT:  This file simulate a plugin for the: dummyapi.io REST API service.
-@AUTHER: Itamar Kuznitsov.
+@AUTHOR: Itamar Kuznitsov.
 @SINCE:  Oct 2023.
 
 """
@@ -133,23 +133,58 @@ class DUMMYAPI_PLUGIN:
 
     # assistance function to write data in a new json file 
     def save_to_file(self, data, filename) -> int:
-        try:
-            with open(filename, 'w') as file:
-                json.dump(data, file)
-            # if success
-            return 0  
-        
-        except Exception as err:
-            print(f"Error occurred while writing to the file: {err}")
-            return 1 
+        if data:
+            try:
+                with open(filename, 'w') as file:
+                    json.dump(data, file)
+                # if success
+                return 0  
+            
+            except Exception as err:
+                print(f"Error occurred while writing to the file: {err}")
+        return 1
 
 # end of DUMMYAPI_PLUGIN class
 
 
 
 
+# entrypoint to run the program 
+if __name__ == "__main__":
+    # the customer's access token  
+    api_key = input("Enter your api key: ") 
+    # build the plugin
+    dummyapi_plugin = DUMMYAPI_PLUGIN(api_key)
+
+    # another plugin with non-valid api key 
+    non_valid_dummyapi_plugin = DUMMYAPI_PLUGIN(api_key+'0')
+
+    # test the api connection - return the status
+    valid_key_status = dummyapi_plugin.test_connection()
+    non_valid_key_status = non_valid_dummyapi_plugin.test_connection()
+    
+    # return 0 for successful collection otherwise 1
+    collect_users_status = dummyapi_plugin.collect_all_users()
+
+    collect_posts_status = dummyapi_plugin.collect_posts_and_comments()
+
+    
+
+    # TODO(I): for programing
+    print("[+] Test valid api key connection status:  " + valid_key_status)
+    print("[+] Test non-valid api key connection status:  " + non_valid_key_status)
+    print("[+] Users evidencne collection status:  " + str(collect_users_status))
+    print("[+] Posts evidencne collection status:  " + str(collect_posts_status))
+
+
+    
+
+
+
+
 '''
-another version of fetching 50 posts - using threadpool
+Another version of fetching 50 posts - using threadpool.
+Fuster but can cause problem (due to api's rate limit) with the api service, so I choose not using it.
 '''
 
     # # fetching 50 posts
@@ -208,35 +243,3 @@ another version of fetching 50 posts - using threadpool
     #     return file_status
 
 
-
-
-
-# entrypoint to run the program 
-if __name__ == "__main__":
-    # the customer's access token  
-    api_key = input("Enter your api key: ") 
-    # build the plugin
-    dummyapi_plugin = DUMMYAPI_PLUGIN(api_key)
-
-    # another plugin with non-valid api key 
-    non_valid_dummyapi_plugin = DUMMYAPI_PLUGIN(api_key+'0')
-
-    # test the api connection - return the status
-    valid_key_status = dummyapi_plugin.test_connection()
-    non_valid_key_status = non_valid_dummyapi_plugin.test_connection()
-    
-    # return 0 for successful collection otherwise 1
-    collect_users_status = dummyapi_plugin.collect_all_users()
-
-    collect_posts_status = dummyapi_plugin.collect_posts_and_comments()
-
-    
-
-    # TODO(I): for programing
-    print("[+] Test valid api key connection status:  " + valid_key_status)
-    print("[+] Test non-valid api key connection status:  " + non_valid_key_status)
-    print("[+] Users evidencne collection status:  " + str(collect_users_status))
-    print("[+] Posts evidencne collection status:  " + str(collect_posts_status))
-
-
-    
