@@ -214,7 +214,7 @@ another version of fetching 50 posts - using threadpool
 # entrypoint to run the program 
 if __name__ == "__main__":
     # the customer's access token  
-    api_key = "6539816801ae687105270925"
+    api_key = input("Enter your api key: ") 
     # build the plugin
     dummyapi_plugin = DUMMYAPI_PLUGIN(api_key)
 
